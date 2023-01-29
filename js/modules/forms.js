@@ -1,6 +1,9 @@
-function forms(){
+ import{closeModal,openModal} from './modal';
+ import { postData } from '../services/services';
+
+function forms(formSelector,modalTimerId){
     
-    const forms = document.querySelectorAll('form');
+    const forms = document.querySelectorAll(formSelector);
 
     const messages = {
         loading: 'img/form/spinner.svg',
@@ -12,23 +15,13 @@ function forms(){
         bindPostData(form);
     })
 
-    const postData= async (url,data)=>{
-        const res= await fetch(url,{
-            method: "POST",
-            headers:{
-                'Content-type': 'application/json'
-            },
-            body: data
-        })
 
-        return await res.json();
-    }
 
     function bindPostData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const statusMessage = document.createElement('img');
+            let statusMessage = document.createElement('img');
             statusMessage.src=messages.loading;
             statusMessage.style.cssText=`
                 display:block;
@@ -67,8 +60,7 @@ function forms(){
         const previousMidalDialog=document.querySelector('.modal__dialog');
 
         previousMidalDialog.classList.add('hide');
-        openModal();
-
+        openModal('.modal',modalTimerId);
         
         thanksModal.classList.add('modal__dialog');
         thanksModal.innerHTML=`
@@ -78,12 +70,12 @@ function forms(){
             </div>
         `;
 
-        modal.append(thanksModal);
+        document.querySelector('.modal').append(thanksModal);
         setTimeout(()=>{
             thanksModal.remove();
             previousMidalDialog.classList.add('show');
             previousMidalDialog.classList.remove('hide');
-            closeModal();
+            closeModal('.modal');
         },4000)
     }
     
@@ -99,4 +91,4 @@ function forms(){
     // .then(json => console.log(json));
 }
 
-module.exports=forms;
+export default forms;
